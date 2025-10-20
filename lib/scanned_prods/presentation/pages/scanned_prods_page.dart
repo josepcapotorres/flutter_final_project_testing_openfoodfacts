@@ -65,6 +65,7 @@ class _ScannedProdsContentState extends State<ScannedProdsContent> {
               Navigator.pushNamed(
                 context,
                 ProdsScanningProdDetailsPage.route,
+                arguments: state.product.barcode,
               );
             });
           } else if (state is ProdsScanningScanCancelled) {
