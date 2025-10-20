@@ -10,18 +10,24 @@ class ScannedProdModel extends ScannedProd {
 
   factory ScannedProdModel.fromJson(Map<String, dynamic> json) {
     return ScannedProdModel(
-      json["barcode"],
-      json["product_name"],
-      json["product_img_url"],
-      DateTime.parse(json["inserted_at"] as String),
+      json["code"],
+      json["product"]["product_name"],
+      json["selected_images"]?["front"]["small"]["en"] ?? "-",
+      json.containsKey("inserted_at")
+          ? DateTime.parse(json["inserted_at"] as String)
+          : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "barcode": barcode,
-      "product_name": productName,
-      "product_img_url": productImageUrl,
+      "code": barcode,
+      "product": {"product_name": productName},
+      "selected_images": {
+        "front": {
+          "small": {"en": productImageUrl},
+        }
+      },
       "inserted_at": insertedAt.toIso8601String(),
     };
   }

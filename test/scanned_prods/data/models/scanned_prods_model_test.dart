@@ -20,9 +20,13 @@ void main() {
     test("should deserialize the json correctly", () {
       // Arrange
       final json = {
-        "barcode": "4802784957",
-        "product_name": "Cebolla encurtida",
-        "product_img_url": "https://domain.com",
+        "code": "4802784957",
+        "product": {"product_name": "Cebolla encurtida"},
+        "selected_images": {
+          "front": {
+            "small": {"en": "https://domain.com"},
+          }
+        },
         "inserted_at": DateTime.now().toIso8601String(),
       };
 
@@ -38,9 +42,13 @@ void main() {
         () {
       // Arrange
       final json = {
-        "barcode": "4802784957",
-        "product_name": "Cebolla encurtida",
-        "product_img_url": 23,
+        "code": 4802784957,
+        "product": {"product_name": "Cebolla encurtida"},
+        "selected_images": {
+          "front": {
+            "small": {"en": "https://domain.com"},
+          }
+        },
         "inserted_at": DateTime.now().toIso8601String(),
       };
 
@@ -53,9 +61,13 @@ void main() {
         () {
       // Arrange
       final json = {
-        "barcode": "4802784957",
-        "product_name": "Cebolla encurtida",
-        "product_url": "https://domain.com",
+        "code": "4802784957",
+        "product": {"product_na": "Cebolla encurtida"},
+        "selected_images": {
+          "front": {
+            "small": {"en": "https://domain.com"},
+          }
+        },
         "inserted_at": DateTime.now().toIso8601String(),
       };
 
@@ -75,9 +87,13 @@ void main() {
       );
 
       final json = {
-        "barcode": "4802784957",
-        "product_name": "Cebolla encurtida",
-        "product_img_url": "https://domain.com",
+        "code": "4802784957",
+        "product": {"product_name": "Cebolla encurtida"},
+        "selected_images": {
+          "front": {
+            "small": {"en": "https://domain.com"},
+          }
+        },
         "inserted_at": DateTime(2025, 08, 23).toIso8601String(),
       };
 
