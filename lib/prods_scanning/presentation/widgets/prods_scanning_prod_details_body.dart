@@ -9,9 +9,7 @@ class ProdsScanningProdDetailsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(loadedProduct.productName ?? "-")),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 10,
@@ -27,7 +25,6 @@ class ProdsScanningProdDetailsBody extends StatelessWidget {
             Text(loadedProduct.productName ?? "-")
           ],
         ),
-      ),
     );
   }
 }
