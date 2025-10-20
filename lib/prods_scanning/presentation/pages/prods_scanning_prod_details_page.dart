@@ -20,21 +20,50 @@ class ProdsScanningProdDetailsPage extends StatelessWidget {
   }
 }
 
-class ProdsScanningProdDetailsPageContent extends StatelessWidget {
+class ProdsScanningProdDetailsPageContent extends StatefulWidget {
   const ProdsScanningProdDetailsPageContent({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProdsScanningCubit, ProdsScanningState>(
-      builder: (context, state) {
-        if (state is! ProdsScanningLoaded) {
-          return const Scaffold(
-            body: Center(child: Text("Producto no cargado")),
-          );
-        }
+  State<ProdsScanningProdDetailsPageContent> createState() =>
+      _ProdsScanningProdDetailsPageContentState();
+}
 
-        return ProdsScanningProdDetailsBody(state.product);
-      },
+class _ProdsScanningProdDetailsPageContentState
+    extends State<ProdsScanningProdDetailsPageContent> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final barcode = ModalRoute.of(context)?.settings.arguments as String?;
+
+      if (barcode != null) {
+        context.read<ProdsScanningCubit>().getProductDetails(barcode);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: BlocBuilder<ProdsScanningCubit, ProdsScanningState>(
+        builder: (context, state) {
+          return switch (state) {
+            ProdsScanningInitial() => const SizedBox.shrink(),
+            ProdsScanningLoading() => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ProdsScanningLoaded() =>
+              ProdsScanningProdDetailsBody(state.product),
+            ProdsScanningError() =>
+              const Center(child: Text("Producto no cargado")),
+            ProdsScanningScanCancelled() => const Center(
+                child: Text("Escaneo cancelado por el usuario"),
+              ),
+          };
+        },
+      ),
     );
   }
 }
