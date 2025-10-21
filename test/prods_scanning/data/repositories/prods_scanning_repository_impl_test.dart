@@ -41,6 +41,7 @@ void main() {
   final barcode = "048938629";
 
   final productModel = ProductModel(
+    1,
     "Nutella",
     "E",
     "https://www.domain.com",

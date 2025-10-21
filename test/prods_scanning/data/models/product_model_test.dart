@@ -7,6 +7,7 @@ void main() {
   test("should be a subclass of Product entity", () {
     // Arrange
     final productModel = ProductModel(
+      1,
       "Product name",
       "E",
       "https://www.domain.com",
@@ -27,6 +28,7 @@ void main() {
   test("should deserialize the data properly", () {
     // Arrange
     final json = {
+      "status": 1,
       "product": {
         "product_name_es": "Nutella",
         "nutrition_grades": "E",
@@ -50,6 +52,7 @@ void main() {
   test("should deserialize the data wrongly", () {
     // Arrange
     final json = {
+      "status": 1,
       "product": {},
       "code": "3017620425035",
       "nutriments": {"nova-group": 3},

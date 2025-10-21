@@ -164,6 +164,7 @@ void main() async {
       (tester) async {
         // arrange
         final product = Product(
+          1,
           "Nutella",
           "E",
           "https://www.domain.com",

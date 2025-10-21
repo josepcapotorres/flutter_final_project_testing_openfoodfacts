@@ -25,6 +25,7 @@ void main() {
   });
 
   final product = Product(
+    1,
     "Nutella",
     "E",
     "https://www.domain.com",

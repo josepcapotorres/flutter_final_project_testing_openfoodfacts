@@ -21,6 +21,7 @@ void main() {
   });
 
   final product = Product(
+    1,
     "Nutella",
     "E",
     "https://images.openfoodfacts.net/images/products/301/762/401/0701/front_en.54.400.jpg",

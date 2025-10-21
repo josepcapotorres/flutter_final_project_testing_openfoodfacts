@@ -23,6 +23,7 @@ void main() {
     // Arrange
     const barCode = "897987987";
     final product = Product(
+      1,
       "Nocilla",
       "A",
       "https://domain.com",

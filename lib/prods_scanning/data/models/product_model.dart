@@ -4,6 +4,7 @@ import 'product_nutrients_model.dart';
 
 class ProductModel extends Product {
   const ProductModel(
+    super.status,
     super.productName,
     super.nutriscoreScore,
     super.productImgUrl,
@@ -14,6 +15,7 @@ class ProductModel extends Product {
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
+      json["status"],
       json["product"]?["product_name_es"] ?? "-",
       json["product"]?["nutrition_grades"] ?? "-",
       json["product"]?["selected_images"]?["front"]?["small"]?["en"] ??
@@ -29,6 +31,7 @@ class ProductModel extends Product {
 
   Map<String, dynamic> toJson() {
     return {
+      "status": status,
       "product": {
         "product_name_es": productName,
         "nutrition_grades": nutriscoreScore,

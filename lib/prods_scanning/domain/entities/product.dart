@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'product_nutrients.dart';
 
 class Product extends Equatable {
+  final int status;
   final String? productName;
   final String? nutriscoreScore;
   final String? productImgUrl;
@@ -11,6 +12,7 @@ class Product extends Equatable {
   final ProductNutrients? productNutrient;
 
   const Product(
+    this.status,
     this.productName,
     this.nutriscoreScore,
     this.productImgUrl,
@@ -21,6 +23,7 @@ class Product extends Equatable {
 
   @override
   List<Object?> get props => [
+        status,
         productName,
         nutriscoreScore,
         productImgUrl,

@@ -34,6 +34,7 @@ void main() {
   });
 
   final productModel = ProductModel(
+    1,
     "Nutella",
     "E",
     "https://www.domain.com",
