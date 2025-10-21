@@ -277,7 +277,7 @@ void main() async {
         await tester.pumpAndSettle();
 
         // assert
-        expect(find.text(product.productName!), findsNWidgets(2));
+        expect(find.text(product.productName!), findsOneWidget);
       },
     );
   });
