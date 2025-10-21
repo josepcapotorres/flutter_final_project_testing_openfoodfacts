@@ -28,7 +28,7 @@ void main() {
     // Arrange
     final json = {
       "product": {
-        "product_name": "Nutella",
+        "product_name_es": "Nutella",
         "nutrition_grades": "E",
         "selected_images": {
           "front": {

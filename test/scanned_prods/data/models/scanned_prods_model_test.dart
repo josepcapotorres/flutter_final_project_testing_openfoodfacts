@@ -21,7 +21,7 @@ void main() {
       // Arrange
       final json = {
         "code": "4802784957",
-        "product": {"product_name": "Cebolla encurtida"},
+        "product": {"product_name_es": "Cebolla encurtida"},
         "selected_images": {
           "front": {
             "small": {"en": "https://domain.com"},
@@ -43,7 +43,7 @@ void main() {
       // Arrange
       final json = {
         "code": 4802784957,
-        "product": {"product_name": "Cebolla encurtida"},
+        "product": {"product_name_es": "Cebolla encurtida"},
         "selected_images": {
           "front": {
             "small": {"en": "https://domain.com"},
@@ -88,7 +88,7 @@ void main() {
 
       final json = {
         "code": "4802784957",
-        "product": {"product_name": "Cebolla encurtida"},
+        "product": {"product_name_es": "Cebolla encurtida"},
         "selected_images": {
           "front": {
             "small": {"en": "https://domain.com"},

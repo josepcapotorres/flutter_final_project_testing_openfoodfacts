@@ -20,7 +20,7 @@ class ProdsScanningRemoteDatasourceImpl extends ProdsScanningRemoteDatasource {
   Future<ProductModel> fetchProductDetails(String barcode) async {
     if (await networkInfo.isConnected) {
       final response = await httpClient.get(
-        Uri.parse("https://world.openfoodfacts.net/api/v2/product/$barcode"),
+        Uri.parse("https://es.openfoodfacts.net/api/v2/product/$barcode"),
       );
 
       final responseBody = jsonDecode(response.body) as Map<String, dynamic>;

@@ -14,7 +14,7 @@ class ProductModel extends Product {
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
-      json["product"]?["product_name"] ?? "-",
+      json["product"]?["product_name_es"] ?? "-",
       json["product"]?["nutrition_grades"] ?? "-",
       json["product"]?["selected_images"]?["front"]?["small"]?["en"] ?? "-",
       json["code"] as String,
@@ -28,7 +28,7 @@ class ProductModel extends Product {
   Map<String, dynamic> toJson() {
     return {
       "product": {
-        "product_name": productName,
+        "product_name_es": productName,
         "nutrition_grades": nutriscoreScore,
         "selected_images": {
           "front": {
