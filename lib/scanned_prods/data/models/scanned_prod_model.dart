@@ -12,7 +12,9 @@ class ScannedProdModel extends ScannedProd {
     return ScannedProdModel(
       json["code"],
       json["product"]["product_name_es"],
-      json["product"]["selected_images"]?["front"]["small"]["en"] ?? "-",
+      json["product"]?["selected_images"]?["front"]?["small"]?["en"] ??
+          json["product"]?["selected_images"]?["front"]?["small"]?["es"] ??
+          "-",
       json.containsKey("inserted_at")
           ? DateTime.parse(json["inserted_at"] as String)
           : DateTime.now(),
@@ -22,11 +24,13 @@ class ScannedProdModel extends ScannedProd {
   Map<String, dynamic> toJson() {
     return {
       "code": barcode,
-      "product": {"product_name_es": productName},
-      "selected_images": {
-        "front": {
-          "small": {"en": productImageUrl},
-        }
+      "product": {
+        "product_name_es": productName,
+        "selected_images": {
+          "front": {
+            "small": {"en": productImageUrl},
+          }
+        },
       },
       "inserted_at": insertedAt.toIso8601String(),
     };

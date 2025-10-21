@@ -3,64 +3,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/domain/entities/product.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/domain/entities/product_nutrients.dart';
-import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/domain/usecases/get_product_details.dart';
-import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/domain/usecases/scan_and_get_product_details.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/presentation/blocs/prods_scanning_cubit.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/presentation/blocs/prods_scanning_state.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/presentation/pages/prods_scanning_prod_details_page.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/scanned_prods/domain/entities/scanned_prod.dart';
-import 'package:flutter_final_project_testing_openfoodfacts/scanned_prods/domain/usecases/get_previous_scanned_prods.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/scanned_prods/presentation/blocs/scanned_prods_cubit.dart';
+import 'package:flutter_final_project_testing_openfoodfacts/scanned_prods/presentation/blocs/scanned_prods_state.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/scanned_prods/presentation/pages/scanned_prods_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetPreviousScannedProds extends Mock
-    implements GetPreviousScannedProds {}
-
-class MockGetProductDetails extends Mock implements GetProductDetails {}
-
-class MockScanAndGetProductDetails extends Mock
-    implements ScanAndGetProductDetails {}
-
 class MockProdsScanningCubit extends MockCubit<ProdsScanningState>
     implements ProdsScanningCubit {}
 
+class MockScannedProdsCubit extends MockCubit<ScannedProdsState>
+    implements ScannedProdsCubit {}
+
 void main() async {
-  late MockGetPreviousScannedProds mockGetPreviousScannedProds;
-  late MockGetProductDetails mockGetProductDetails;
-  late MockScanAndGetProductDetails mockScanAndGetProductDetails;
   late MockProdsScanningCubit mockProdsScanningCubit;
+  late MockScannedProdsCubit mockScannedProdsCubit;
 
   setUp(() {
-    mockGetPreviousScannedProds = MockGetPreviousScannedProds();
-    mockGetProductDetails = MockGetProductDetails();
-    mockScanAndGetProductDetails = MockScanAndGetProductDetails();
     mockProdsScanningCubit = MockProdsScanningCubit();
+    mockScannedProdsCubit = MockScannedProdsCubit();
   });
 
-  testWidgets("ensure we load the widget ScannedProdsPage", (tester) async {
-    // arrange
-    when(() => mockGetPreviousScannedProds()).thenAnswer((_) async => []);
-
-    final scannedProdsCubit = ScannedProdsCubit(mockGetPreviousScannedProds);
-    final detailsProductCubit = ProdsScanningCubit(
-      mockGetProductDetails,
-      mockScanAndGetProductDetails,
-    );
-
-    // act
+  Future<void> pumpWidget(WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: MultiBlocProvider(
           providers: [
-            BlocProvider.value(value: scannedProdsCubit),
-            BlocProvider.value(value: detailsProductCubit)
+            BlocProvider<ScannedProdsCubit>.value(value: mockScannedProdsCubit),
+            BlocProvider<ProdsScanningCubit>.value(
+              value: mockProdsScanningCubit,
+            )
           ],
           child: const ScannedProdsContent(),
         ),
       ),
     );
+  }
+
+  testWidgets("ensure we load the widget ScannedProdsPage", (tester) async {
+    // arrange
+    when(() => mockScannedProdsCubit.state).thenReturn(ScannedProdsInitial());
+    when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningInitial());
+
+    // act
+    await pumpWidget(tester);
 
     // assert
     expect(find.text("Productos escaneados"), findsOneWidget);
@@ -70,26 +60,11 @@ void main() async {
       "ensure we load the CircularProgressIndicator widget while waiting for data",
       (tester) async {
     // arrange
-    when(() => mockGetPreviousScannedProds()).thenAnswer((_) async => []);
-
-    final scannedProdsCubit = ScannedProdsCubit(mockGetPreviousScannedProds);
-    final detailsProductCubit = ProdsScanningCubit(
-      mockGetProductDetails,
-      mockScanAndGetProductDetails,
-    );
+    when(() => mockScannedProdsCubit.state).thenReturn(ScannedProdsLoading());
+    when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningInitial());
 
     // act
-    await tester.pumpWidget(
-      MaterialApp(
-        home: MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: scannedProdsCubit),
-            BlocProvider.value(value: detailsProductCubit)
-          ],
-          child: const ScannedProdsContent(),
-        ),
-      ),
-    );
+    await pumpWidget(tester);
 
     // assert
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -98,33 +73,17 @@ void main() async {
   testWidgets("ensure we load the Grid widget when data is not empty",
       (tester) async {
     // arrange
-    when(() => mockGetPreviousScannedProds()).thenAnswer(
-      (_) async => [
-        ScannedProd(
-            "048938629", "Nutella", "https://domain.com", DateTime.now()),
-        ScannedProd(
-            "048938629", "Nutella", "https://domain.com", DateTime.now()),
-      ],
-    );
+    final products = [
+      ScannedProd("048938629", "Nutella", "https://domain.com", DateTime.now()),
+      ScannedProd("048938629", "Nutella", "https://domain.com", DateTime.now()),
+    ];
 
-    final scannedProdsCubit = ScannedProdsCubit(mockGetPreviousScannedProds);
-    final detailsProductCubit = ProdsScanningCubit(
-      mockGetProductDetails,
-      mockScanAndGetProductDetails,
-    );
+    when(() => mockScannedProdsCubit.state)
+        .thenReturn(ScannedProdsLoaded(products));
+    when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningInitial());
 
     // act
-    await tester.pumpWidget(
-      MaterialApp(
-        home: MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: scannedProdsCubit),
-            BlocProvider.value(value: detailsProductCubit)
-          ],
-          child: const ScannedProdsContent(),
-        ),
-      ),
-    );
+    await pumpWidget(tester);
 
     await tester.pump();
 
@@ -135,28 +94,11 @@ void main() async {
   testWidgets("ensure we load the Grid widget when data is empty",
       (tester) async {
     // arrange
-    when(() => mockGetPreviousScannedProds()).thenAnswer(
-      (_) async => [],
-    );
-
-    final scannedProdsCubit = ScannedProdsCubit(mockGetPreviousScannedProds);
-    final detailsProductCubit = ProdsScanningCubit(
-      mockGetProductDetails,
-      mockScanAndGetProductDetails,
-    );
+    when(() => mockScannedProdsCubit.state).thenReturn(ScannedProdsEmpty());
+    when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningInitial());
 
     // act
-    await tester.pumpWidget(
-      MaterialApp(
-        home: MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: scannedProdsCubit),
-            BlocProvider.value(value: detailsProductCubit)
-          ],
-          child: const ScannedProdsContent(),
-        ),
-      ),
-    );
+    await pumpWidget(tester);
 
     await tester.pump();
 
@@ -166,26 +108,13 @@ void main() async {
 
   group("ProdsScanningCubit", () {
     void arrangeErrorStatesStubs(ProdsScanningState state) {
+      when(() => mockProdsScanningCubit.state).thenReturn(state);
+      when(() => mockScannedProdsCubit.state).thenReturn(ScannedProdsInitial());
+
       whenListen(
         mockProdsScanningCubit,
         Stream.fromIterable([state]),
         initialState: ProdsScanningLoading(),
-      );
-
-      when(() => mockGetPreviousScannedProds()).thenAnswer((_) async => []);
-    }
-
-    Widget getScannedProdsContentWidget() {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider<ProdsScanningCubit>.value(
-            value: mockProdsScanningCubit,
-          ),
-          BlocProvider<ScannedProdsCubit>.value(
-            value: ScannedProdsCubit(mockGetPreviousScannedProds),
-          ),
-        ],
-        child: const ScannedProdsContent(),
       );
     }
 
@@ -196,11 +125,7 @@ void main() async {
         arrangeErrorStatesStubs(ProdsScanningScanCancelled());
 
         // act
-        await tester.pumpWidget(
-          MaterialApp(
-            home: getScannedProdsContentWidget(),
-          ),
-        );
+        await pumpWidget(tester);
 
         mockProdsScanningCubit.emit(ProdsScanningScanCancelled());
 
@@ -219,11 +144,7 @@ void main() async {
         arrangeErrorStatesStubs(ProdsScanningError());
 
         // act
-        await tester.pumpWidget(
-          MaterialApp(
-            home: getScannedProdsContentWidget(),
-          ),
-        );
+        await pumpWidget(tester);
 
         mockProdsScanningCubit.emit(ProdsScanningError());
 
@@ -268,7 +189,15 @@ void main() async {
                     child: ProdsScanningProdDetailsPageContent(),
                   ),
             },
-            home: getScannedProdsContentWidget(),
+            home: MultiBlocProvider(
+              providers: [
+                BlocProvider<ScannedProdsCubit>.value(
+                    value: mockScannedProdsCubit),
+                BlocProvider<ProdsScanningCubit>.value(
+                    value: mockProdsScanningCubit)
+              ],
+              child: const ScannedProdsContent(),
+            ),
           ),
         );
 

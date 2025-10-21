@@ -16,7 +16,9 @@ class ProductModel extends Product {
     return ProductModel(
       json["product"]?["product_name_es"] ?? "-",
       json["product"]?["nutrition_grades"] ?? "-",
-      json["product"]?["selected_images"]?["front"]?["small"]?["en"] ?? "-",
+      json["product"]?["selected_images"]?["front"]?["small"]?["en"] ??
+          json["product"]?["selected_images"]?["front"]?["small"]?["es"] ??
+          "-",
       json["code"] as String,
       _processingFoodFromJson(
         json["product"]?["nutriments"]?["nova-group"] ?? -1,

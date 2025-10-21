@@ -88,11 +88,13 @@ void main() {
 
       final json = {
         "code": "4802784957",
-        "product": {"product_name_es": "Cebolla encurtida"},
-        "selected_images": {
-          "front": {
-            "small": {"en": "https://domain.com"},
-          }
+        "product": {
+          "product_name_es": "Cebolla encurtida",
+          "selected_images": {
+            "front": {
+              "small": {"en": "https://domain.com"},
+            }
+          },
         },
         "inserted_at": DateTime(2025, 08, 23).toIso8601String(),
       };
