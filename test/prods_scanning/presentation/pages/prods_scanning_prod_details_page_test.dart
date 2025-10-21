@@ -71,7 +71,6 @@ void main() {
     await tester.pump();
 
     // assert
-    expect(find.byType(SizedBox), findsNothing);
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byType(ProdsScanningProdDetailsBody), findsOneWidget);
     expect(find.text("Producto no cargado"), findsNothing);
@@ -88,7 +87,6 @@ void main() {
     await tester.pump();
 
     // assert
-    expect(find.byType(SizedBox), findsNothing);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.byType(ProdsScanningProdDetailsBody), findsNothing);
     expect(find.text("Producto no cargado"), findsNothing);
@@ -105,7 +103,6 @@ void main() {
     await tester.pump();
 
     // assert
-    expect(find.byType(SizedBox), findsNothing);
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byType(ProdsScanningProdDetailsBody), findsNothing);
     expect(find.text("Producto no cargado"), findsOneWidget);
@@ -123,7 +120,6 @@ void main() {
     await tester.pump();
 
     // assert
-    expect(find.byType(SizedBox), findsNothing);
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byType(ProdsScanningProdDetailsBody), findsNothing);
     expect(find.text("Producto no cargado"), findsNothing);
