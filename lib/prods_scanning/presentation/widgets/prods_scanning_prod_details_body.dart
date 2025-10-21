@@ -9,8 +9,6 @@ class ProdsScanningProdDetailsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nutriscoreScore = loadedProduct.nutriscoreScore ?? "-";
-
     return SingleChildScrollView(
       child: Column(
         spacing: 10,
@@ -31,7 +29,7 @@ class ProdsScanningProdDetailsBody extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           ListTile(
-            title: Text("Puntuación de Nutriscore: asd asf asdf asdf asdf"),
+            title: Text("Puntuación de Nutriscore:"),
             subtitle: _NutriScoreValue(loadedProduct.nutriscoreScore),
           ),
           ListTile(
