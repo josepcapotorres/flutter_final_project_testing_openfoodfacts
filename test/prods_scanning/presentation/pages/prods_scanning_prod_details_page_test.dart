@@ -34,11 +34,7 @@ void main() {
     ),
   );
 
-  testWidgets("by default, Loaded state is not Loaded", (tester) async {
-    // arrange
-    when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningInitial());
-
-    // act
+  Future<void> _pumpWidget(WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: BlocProvider<ProdsScanningCubit>.value(
@@ -47,10 +43,21 @@ void main() {
         ),
       ),
     );
+  }
+
+  testWidgets("by default, Initial state is loaded", (tester) async {
+    // arrange
+    when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningInitial());
+
+    // act
+    await _pumpWidget(tester);
 
     // assert
-    expect(find.text("Producto no cargado"), findsOneWidget);
+    expect(find.byType(SizedBox), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byType(ProdsScanningProdDetailsBody), findsNothing);
+    expect(find.text("Producto no cargado"), findsNothing);
+    expect(find.text("Escaneo cancelado por el usuario"), findsNothing);
   });
 
   testWidgets("should be loaded the 'Loaded' state", (tester) async {
@@ -59,19 +66,67 @@ void main() {
         .thenReturn(ProdsScanningLoaded(product));
 
     // act
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BlocProvider<ProdsScanningCubit>.value(
-          value: mockProdsScanningCubit,
-          child: ProdsScanningProdDetailsPageContent(),
-        ),
-      ),
-    );
+    await _pumpWidget(tester);
 
     await tester.pump();
 
     // assert
-    expect(find.text("Producto no cargado"), findsNothing);
+    expect(find.byType(SizedBox), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byType(ProdsScanningProdDetailsBody), findsOneWidget);
+    expect(find.text("Producto no cargado"), findsNothing);
+    expect(find.text("Escaneo cancelado por el usuario"), findsNothing);
+  });
+
+  testWidgets("should be loaded the 'Loading' state", (tester) async {
+    // arrange
+    when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningLoading());
+
+    // act
+    await _pumpWidget(tester);
+
+    await tester.pump();
+
+    // assert
+    expect(find.byType(SizedBox), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(ProdsScanningProdDetailsBody), findsNothing);
+    expect(find.text("Producto no cargado"), findsNothing);
+    expect(find.text("Escaneo cancelado por el usuario"), findsNothing);
+  });
+
+  testWidgets("should be loaded the 'Error' state", (tester) async {
+    // arrange
+    when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningError());
+
+    // act
+    await _pumpWidget(tester);
+
+    await tester.pump();
+
+    // assert
+    expect(find.byType(SizedBox), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byType(ProdsScanningProdDetailsBody), findsNothing);
+    expect(find.text("Producto no cargado"), findsOneWidget);
+    expect(find.text("Escaneo cancelado por el usuario"), findsNothing);
+  });
+
+  testWidgets("should be loaded the 'ScanCancelled' state", (tester) async {
+    // arrange
+    when(() => mockProdsScanningCubit.state)
+        .thenReturn(ProdsScanningScanCancelled());
+
+    // act
+    await _pumpWidget(tester);
+
+    await tester.pump();
+
+    // assert
+    expect(find.byType(SizedBox), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byType(ProdsScanningProdDetailsBody), findsNothing);
+    expect(find.text("Producto no cargado"), findsNothing);
+    expect(find.text("Escaneo cancelado por el usuario"), findsOneWidget);
   });
 }
