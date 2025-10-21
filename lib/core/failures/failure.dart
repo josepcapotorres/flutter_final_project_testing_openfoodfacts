@@ -16,3 +16,8 @@ class ScanCancelledFailure extends Failure {
   @override
   List<Object?> get props => [];
 }
+
+class ProductNotFoundFailure extends Failure {
+  @override
+  List<Object?> get props => [];
+}

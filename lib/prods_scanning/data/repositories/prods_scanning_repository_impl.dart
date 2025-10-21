@@ -30,10 +30,14 @@ class ProdsScanningRepositoryImpl extends ProdsScanningRepository {
       final productDetails =
           await remoteDatasource.fetchProductDetails(barcode);
 
-      await localDatasource.cacheScannedProd(productDetails);
+      if (productDetails.status == 1) {
+        await localDatasource.cacheScannedProd(productDetails);
 
-      return Right(productDetails);
-    } catch (_) {
+        return Right(productDetails);
+      } else {
+        return Left(ProductNotFoundFailure());
+      }
+    } catch (e) {
       return Left(ServerFailure());
     }
   }
