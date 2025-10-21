@@ -57,13 +57,13 @@ Future<void> init() async {
       () => ProdsScanningBarcodeScannerDataSourceImpl());
 
   // External
-  sl.registerSingletonAsync<Box<Map<String, dynamic>>>(
+  sl.registerSingletonAsync<Box<dynamic>>(
     () async {
       final appDir = await getApplicationDocumentsDirectory();
 
       Hive.init(appDir.path);
 
-      return await Hive.openBox<Map<String, dynamic>>('scanned_prods');
+      return await Hive.openBox<dynamic>('scanned_prods');
     },
   );
 

@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 
+import '../../../core/format/deep_cast.dart';
 import '../models/product_model.dart';
 
 abstract class ProdsScanningLocalDatasource {
@@ -11,7 +12,7 @@ abstract class ProdsScanningLocalDatasource {
 }
 
 class ProdsScanningLocalDatasourceImpl extends ProdsScanningLocalDatasource {
-  final Box<Map<String, dynamic>> _box;
+  final Box<dynamic> _box;
 
   ProdsScanningLocalDatasourceImpl(this._box);
 
@@ -21,10 +22,8 @@ class ProdsScanningLocalDatasourceImpl extends ProdsScanningLocalDatasource {
   }
 
   @override
-  Future<List<ProductModel>> getPreviousScannedProds() {
-    return Future.value(
-      _box.values.map((e) => ProductModel.fromJson(e)).toList(),
-    );
+  Future<List<ProductModel>> getPreviousScannedProds() async {
+    return _box.values.map((e) => ProductModel.fromJson(deepCast(e))).toList();
   }
 
   @override
@@ -33,6 +32,6 @@ class ProdsScanningLocalDatasourceImpl extends ProdsScanningLocalDatasource {
 
     if (result == null) return null;
 
-    return Future.value(ProductModel.fromJson(result));
+    return Future.value(ProductModel.fromJson(deepCast(result)));
   }
 }
