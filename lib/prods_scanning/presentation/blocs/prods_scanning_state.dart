@@ -28,6 +28,11 @@ class ProdsScanningError extends ProdsScanningState {
   List<Object?> get props => [];
 }
 
+class ProdNotFound extends ProdsScanningState {
+  @override
+  List<Object?> get props => [];
+}
+
 class ProdsScanningScanCancelled extends ProdsScanningState {
   @override
   List<Object?> get props => [];

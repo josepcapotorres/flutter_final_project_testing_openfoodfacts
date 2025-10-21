@@ -20,7 +20,13 @@ class ProdsScanningCubit extends Cubit<ProdsScanningState> {
     final result = await _getProductDetailsUseCase(barcode);
 
     result.fold(
-      (l) => emit(ProdsScanningError()),
+      (l) {
+        if (l is ProductNotFoundFailure) {
+          emit(ProdNotFound());
+        } else {
+          emit(ProdsScanningError());
+        }
+      },
       (r) => emit(ProdsScanningLoaded(r)),
     );
   }
@@ -34,6 +40,8 @@ class ProdsScanningCubit extends Cubit<ProdsScanningState> {
       (l) {
         if (l is ScanCancelledFailure) {
           emit(ProdsScanningScanCancelled());
+        } else if (l is ProductNotFoundFailure) {
+          emit(ProdNotFound());
         } else {
           emit(ProdsScanningError());
         }
