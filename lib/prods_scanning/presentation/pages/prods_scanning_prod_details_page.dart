@@ -61,6 +61,7 @@ class _ProdsScanningProdDetailsPageContentState
             ProdsScanningScanCancelled() => const Center(
                 child: Text("Escaneo cancelado por el usuario"),
               ),
+            ProdNotFound() => Text("Producto no encontrado"),
           };
         },
       ),

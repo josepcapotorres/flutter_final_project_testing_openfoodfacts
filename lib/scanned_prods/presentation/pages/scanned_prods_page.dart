@@ -72,6 +72,8 @@ class _ScannedProdsContentState extends State<ScannedProdsContent> {
             _showSnackBar("Escaneo cancelado por el usuario");
           } else if (state is ProdsScanningError) {
             _showSnackBar("Error al obtener los datos del producto");
+          } else if (state is ProdNotFound) {
+            _showSnackBar("Producto no encontrado");
           }
         },
         builder: (context, state) {
