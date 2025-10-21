@@ -42,8 +42,10 @@ class ScannedProdsGridItem extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(product.productName,
-                  style: TextStyle(color: Colors.white)),
+              child: Text(
+                product.productName,
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
