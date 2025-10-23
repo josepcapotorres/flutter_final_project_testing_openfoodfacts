@@ -35,7 +35,7 @@ void main() {
     ),
   );
 
-  Future<void> _pumpWidget(WidgetTester tester) async {
+  Future<void> pumpWidget(WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: BlocProvider<ProdsScanningCubit>.value(
@@ -51,7 +51,7 @@ void main() {
     when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningInitial());
 
     // act
-    await _pumpWidget(tester);
+    await pumpWidget(tester);
 
     // assert
     expect(find.byType(SizedBox), findsOneWidget);
@@ -67,7 +67,7 @@ void main() {
         .thenReturn(ProdsScanningLoaded(product));
 
     // act
-    await _pumpWidget(tester);
+    await pumpWidget(tester);
 
     await tester.pump();
 
@@ -83,7 +83,7 @@ void main() {
     when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningLoading());
 
     // act
-    await _pumpWidget(tester);
+    await pumpWidget(tester);
 
     await tester.pump();
 
@@ -99,7 +99,7 @@ void main() {
     when(() => mockProdsScanningCubit.state).thenReturn(ProdsScanningError());
 
     // act
-    await _pumpWidget(tester);
+    await pumpWidget(tester);
 
     await tester.pump();
 
@@ -116,7 +116,7 @@ void main() {
         .thenReturn(ProdsScanningScanCancelled());
 
     // act
-    await _pumpWidget(tester);
+    await pumpWidget(tester);
 
     await tester.pump();
 
