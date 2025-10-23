@@ -3,8 +3,8 @@ name: Android testers CD AppDistribution apk
 on:
   workflow_run:
     workflows: ["Android testers CI"] # Nombre exacto
-    types:
-      - completed
+    types: [completed]
+    branches: [testers]
 jobs:
   build_and_deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
