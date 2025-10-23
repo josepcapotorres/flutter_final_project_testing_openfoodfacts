@@ -5,6 +5,13 @@ on:
     workflows: ["Android testers CI"] # Nombre exacto
     types: [completed]
     branches: [testers]
+  
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run testers CD manually'
+        required: true
+        default: 'testers'
 jobs:
   build_and_deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
