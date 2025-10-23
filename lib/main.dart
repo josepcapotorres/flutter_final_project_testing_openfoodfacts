@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'environment.dart';
 import 'injection_container.dart' as di;
 import 'prods_scanning/presentation/pages/prods_scanning_prod_details_page.dart';
 import 'scanned_prods/presentation/pages/scanned_prods_page.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: Environment.appName,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
