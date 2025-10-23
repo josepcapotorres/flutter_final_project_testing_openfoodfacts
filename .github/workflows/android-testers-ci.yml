@@ -2,6 +2,7 @@ name: Android testers CI
 on:
   push:
     branches: [testers]
+    
   workflow_dispatch:
     inputs:
       branch:
