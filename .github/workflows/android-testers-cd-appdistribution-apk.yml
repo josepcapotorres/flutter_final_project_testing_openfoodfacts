@@ -32,11 +32,11 @@ jobs:
           echo "Versión detectada: $VERSION"
       - name: Building apk in release mode
         run: flutter build apk --release \
-        --dart-define=FLAVOR=testers \
-        --dart-define=BASE_URL=${{secrets.BASE_URL_TESTERS}} \
-        --dart-define=APP_NAME="OpenFoodFacts testing Testers"
+          --dart-define=FLAVOR=testers \
+          --dart-define=BASE_URL=${{secrets.BASE_URL_TESTERS}} \
+          --dart-define=APP_NAME="OpenFoodFacts testing Testers"
         
-        mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/openfoodfacts_testers_${{steps.version.outputs.VERSION}}.apk
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/openfoodfacts_testers_${{steps.version.outputs.VERSION}}.apk
       - name: Uploading to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/openfoodfacts_testers.apk \
