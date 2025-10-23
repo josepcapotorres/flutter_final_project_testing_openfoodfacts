@@ -1,0 +1,48 @@
+name: Android testers CD AppDistribution apk
+
+on:
+  workflow_run:
+    workflows: ["Android testers CI"] # Nombre exacto
+    types:
+      - completed
+jobs:
+  build_and_deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - name: Cleaning Flutter's build cache
+        run: flutter clean
+      - name: Installing dependencies
+        run: flutter pub get
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/my-release-key.jks
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=app/my-release-key.jks" >> android/key.properties
+      - name: Extract app version
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Versión detectada: $VERSION"
+      - name: Building apk in release mode
+        run: flutter build apk --release \
+        --dart-define=FLAVOR=testers \
+        --dart-define=BASE_URL=${{secrets.BASE_URL_TESTERS}} \
+        --dart-define=APP_NAME="OpenFoodFacts testing Testers"
+        
+        mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/openfoodfacts_testers_${{steps.version.outputs.VERSION}}.apk
+      - name: Uploading to Firebase App Distribution
+        run: |
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/openfoodfacts_testers.apk \
+            --app ${{ secrets.FIREBASE_APP_ID }} \
+            --groups testers
+      - name: Cleaning .jks and key.properties files
+        run: |
+          rm android/app/my-release-key.jks
+          rm android/key.properties
