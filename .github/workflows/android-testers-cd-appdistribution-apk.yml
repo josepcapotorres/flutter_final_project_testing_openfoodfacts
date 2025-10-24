@@ -49,8 +49,14 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa-key.json
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $GOOGLE_APPLICATION_CREDENTIALS
+
+          # Autenticación de gcloud con la cuenta de servicio
           gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
           gcloud config set project ${{ secrets.FIREBASE_PROJECT_ID }}
+
+          # Activar autenticación por defecto (para firebase-tools)
+          gcloud auth application-default login --no-launch-browser --quiet || true
+          gcloud auth application-default set-quota-project ${{ secrets.FIREBASE_PROJECT_ID }}
       - name: Uploading to Firebase App Distribution
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa-key.json
