@@ -49,7 +49,7 @@ jobs:
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/openfoodfacts_testers.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
-            --groups testers
+            --groups testers \
             --token ${{secrets.FIREBASE_AUTH_TOKEN}}
       - name: Cleaning .jks and key.properties files
         run: |
