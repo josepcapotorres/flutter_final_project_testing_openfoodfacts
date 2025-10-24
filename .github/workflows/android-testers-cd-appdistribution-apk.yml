@@ -45,21 +45,24 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
       - name: Activate Service Account for GCloud/Firebase
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa-key.json
         run: |
-          # 1a. Escribir el JSON de credenciales
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > firebase-sa-key.json
-          
-          # 1b. Activar la cuenta de servicio con gcloud
-          # Esto autentica la sesión globalmente para herramientas de Google y Firebase.
-          gcloud auth activate-service-account --key-file=firebase-sa-key.json
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $GOOGLE_APPLICATION_CREDENTIALS
+          gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+          gcloud config set project ${{ secrets.FIREBASE_PROJECT_ID }}
       - name: Uploading to Firebase App Distribution
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa-key.json
         run: |
+          # Distribution
           firebase appdistribution:distribute build/app/outputs/flutter-apk/openfoodfacts_testers_${{steps.version.outputs.VERSION}}.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --groups testers \
+            --debug
       - name: Cleaning .jks and key.properties files
         run: |
           rm android/app/my-release-key.jks
           rm android/key.properties
       - name: Clean up Firebase credentials
-        run: rm ${{ runner.temp }}/firebase-key.json
+        run: rm ${{ runner.temp }}/firebase-sa-key.json
