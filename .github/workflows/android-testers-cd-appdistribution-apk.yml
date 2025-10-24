@@ -41,17 +41,22 @@ jobs:
         run: |
           flutter build apk --release \
             --dart-define=APP_NAME="OpenFoodFacts testing Testers"
-        
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/openfoodfacts_testers_${{steps.version.outputs.VERSION}}.apk
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
+      - name: Set up Firebase authentication
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-key.json
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $GOOGLE_APPLICATION_CREDENTIALS
       - name: Uploading to Firebase App Distribution
         run: |
-          firebase appdistribution:distribute build/app/outputs/flutter-apk/openfoodfacts_testers.apk \
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/openfoodfacts_testers_${{steps.version.outputs.VERSION}}.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --groups testers \
-            --token ${{secrets.FIREBASE_AUTH_TOKEN}}
       - name: Cleaning .jks and key.properties files
         run: |
           rm android/app/my-release-key.jks
           rm android/key.properties
+      - name: Clean up Firebase credentials
+        run: rm ${{ runner.temp }}/firebase-key.json
