@@ -1,5 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/core/network/network_info.dart';
+import 'package:flutter_final_project_testing_openfoodfacts/data/services/crash_reporter_service.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/domain/usecases/get_product_details.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/domain/usecases/scan_and_get_product_details.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/presentation/blocs/prods_scanning_cubit.dart';
@@ -41,6 +43,7 @@ Future<void> init() async {
       remoteDatasource: sl(),
       localDatasource: sl(),
       barcodeScannerDataSource: sl(),
+      reporterService: sl(),
     ),
   );
 
@@ -70,6 +73,10 @@ Future<void> init() async {
   sl.registerLazySingleton<http.Client>(() => http.Client());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton<Connectivity>(() => Connectivity());
+
+  sl.registerLazySingleton<CrashReporterService>(
+    () => CrashReporterService(FirebaseCrashlytics.instance),
+  );
 
   // Wait all async dependencies to have finished
   await sl.allReady();

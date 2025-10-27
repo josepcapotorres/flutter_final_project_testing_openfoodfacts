@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter_final_project_testing_openfoodfacts/data/services/crash_reporter_service.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/data/datasources/prods_scanning_barcode_scanner_datasource.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/data/datasources/prods_scanning_local_datasource.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/data/datasources/prods_scanning_remote_datasource.dart';
@@ -11,11 +12,13 @@ class ProdsScanningRepositoryImpl extends ProdsScanningRepository {
   final ProdsScanningRemoteDatasource remoteDatasource;
   final ProdsScanningLocalDatasource localDatasource;
   final ProdsScanningBarcodeScannerDataSource barcodeScannerDataSource;
+  final CrashReporterService reporterService;
 
   ProdsScanningRepositoryImpl({
     required this.remoteDatasource,
     required this.localDatasource,
     required this.barcodeScannerDataSource,
+    required this.reporterService,
   });
 
   @override
@@ -37,7 +40,10 @@ class ProdsScanningRepositoryImpl extends ProdsScanningRepository {
       } else {
         return Left(ProductNotFoundFailure());
       }
-    } catch (e) {
+    } catch (e, stack) {
+      await reporterService.log("barcode: $barcode");
+      await reporterService.recordError(e, stack);
+
       return Left(ServerFailure());
     }
   }
