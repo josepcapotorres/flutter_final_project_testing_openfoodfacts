@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/core/exceptions/exceptions.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/core/failures/failure.dart';
+import 'package:flutter_final_project_testing_openfoodfacts/data/services/crash_reporter_service.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/data/datasources/prods_scanning_barcode_scanner_datasource.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/data/datasources/prods_scanning_local_datasource.dart';
 import 'package:flutter_final_project_testing_openfoodfacts/prods_scanning/data/datasources/prods_scanning_remote_datasource.dart';
@@ -20,22 +21,37 @@ class MockProdsScanningRemoteDataSource extends Mock
 class MockProdsScanningBarcodeScannerDataSource extends Mock
     implements ProdsScanningBarcodeScannerDataSource {}
 
+class MockCrashReporterService extends Mock implements CrashReporterService {}
+
+class FakeError extends Fake implements Object {}
+
+class FakeStackTrace extends Fake implements StackTrace {}
+
 void main() {
   late ProdsScanningRepositoryImpl sut;
   late MockProdsScanningRemoteDataSource mockRemoteDataSource;
   late MockProdsScanningLocalDataSource mockLocalDataSource;
   late MockProdsScanningBarcodeScannerDataSource mockScanningDataSource;
+  late MockCrashReporterService mockCrashReporterService;
 
   setUp(() {
     mockRemoteDataSource = MockProdsScanningRemoteDataSource();
     mockLocalDataSource = MockProdsScanningLocalDataSource();
     mockScanningDataSource = MockProdsScanningBarcodeScannerDataSource();
+    mockCrashReporterService = MockCrashReporterService();
 
     sut = ProdsScanningRepositoryImpl(
       remoteDatasource: mockRemoteDataSource,
       localDatasource: mockLocalDataSource,
       barcodeScannerDataSource: mockScanningDataSource,
+      reporterService: mockCrashReporterService,
     );
+  });
+
+  setUpAll(() {
+    registerFallbackValue('');
+    registerFallbackValue(FakeError());
+    registerFallbackValue(FakeStackTrace());
   });
 
   final barcode = "048938629";
@@ -55,6 +71,16 @@ void main() {
     ),
   );
 
+  void arrangeCrashReportingStubs() {
+    when(() => mockCrashReporterService.log(any())).thenAnswer(
+      (_) async {},
+    );
+
+    when(() => mockCrashReporterService.recordError(any(), any())).thenAnswer(
+      (_) async {},
+    );
+  }
+
   group(
     "getProductDetails",
     () {
@@ -65,6 +91,8 @@ void main() {
         when(() => mockLocalDataSource.getScannedProd(barcode)).thenAnswer(
           (_) async => productModel,
         );
+
+        arrangeCrashReportingStubs();
 
         // Act
         final productDetails = await sut.getProductDetails(barcode);
@@ -112,6 +140,8 @@ void main() {
         when(() => mockRemoteDataSource.fetchProductDetails(barcode)).thenThrow(
           ServerException(),
         );
+
+        arrangeCrashReportingStubs();
 
         // Act
         final productDetails = await sut.getProductDetails(barcode);
