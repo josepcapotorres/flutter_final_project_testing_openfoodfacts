@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_commit.id }}
       - uses: subosito/flutter-action@v2
       - name: Cleaning Flutter's build cache
         run: flutter clean
