@@ -42,10 +42,6 @@ jobs:
       - name: Create google-services.json (Android)
         run: |
           echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > android/app/google-services.json
-      - name: Create Google PLIST (iOS)
-        run: |
-          mkdir -p ios/Runner
-          echo "${{ secrets.GOOGLE_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
       - name: Create firebase.json
         run: |
           echo "${{ secrets.FIREBASE_GOOGLE_SERVICES_JSON }}" > firebase.json
@@ -60,12 +56,14 @@ jobs:
           SERVICE_ACCOUNT_FILE="firebase-sa-key.json"
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $SERVICE_ACCOUNT_FILE
 
+          # 2. Establece la ruta CORRECTA para la variable GOOGLE_APPLICATION_CREDENTIALS
+          #    La ruta es el archivo en el directorio actual (la raíz del workspace)
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$SERVICE_ACCOUNT_FILE" >> $GITHUB_ENV
+
           # Autenticación de gcloud con la cuenta de servicio
           gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_FILE --project=${{secrets.FIREBASE_PROJECT_ID}}
           gcloud config set project ${{ secrets.FIREBASE_PROJECT_ID }}
       - name: Uploading to Firebase App Distribution
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa-key.json
         run: |
           # Distribution
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
