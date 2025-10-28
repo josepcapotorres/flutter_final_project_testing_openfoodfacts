@@ -33,6 +33,14 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Firebase / Google Services
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Opcional, si usas Firebase Hosting/Functions (no suele ser necesario para el build de Flutter)
+firebase.json
+.firebaserc
+
 # Symbolication related
 app.*.symbols
 
