@@ -21,6 +21,14 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_commit.id }}
       - uses: subosito/flutter-action@v2
+      - name: Show commit number to deploy
+        run: |
+          git rev-parse HEAD
+      - name: Debug workflow_run info
+        run: |
+          echo "Workflow branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "Workflow commit: ${{ github.event.workflow_run.head_commit.id }}"
+          git log -1
       - name: Cleaning Flutter's build cache
         run: flutter clean
       - name: Installing dependencies
