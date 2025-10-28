@@ -45,7 +45,7 @@ jobs:
       - name: Create Google PLIST (iOS)
         run: |
           mkdir -p ios/Runner
-          echo "${{ secrets.GOOGLE_PLIST }}" > ios/Runner/GoogleService-Info.plist
+          echo "${{ secrets.GOOGLE_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
       - name: Create firebase.json
         run: |
           echo "${{ secrets.FIREBASE_GOOGLE_SERVICES_JSON }}" > firebase.json
@@ -68,7 +68,7 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa-key.json
         run: |
           # Distribution
-          firebase appdistribution:distribute build/app/outputs/flutter-apk/openfoodfacts_testers_${{steps.version.outputs.VERSION}}.apk \
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --groups testers \
             --debug
