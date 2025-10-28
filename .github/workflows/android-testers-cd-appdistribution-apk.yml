@@ -75,4 +75,4 @@ jobs:
           rm android/app/my-release-key.jks
           rm android/key.properties
       - name: Clean up Firebase credentials
-        run: rm ${{ runner.temp }}/firebase-sa-key.json
+        run: rm firebase-sa-key.json
