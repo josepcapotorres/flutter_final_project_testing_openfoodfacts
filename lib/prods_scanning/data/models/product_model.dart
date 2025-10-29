@@ -14,19 +14,31 @@ class ProductModel extends Product {
   );
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
+    final dynamic smallImageMap =
+        json["product"]?["selected_images"]?["front"]?["small"];
+    final pictureUrl = _getFirstValueFromMap(smallImageMap);
+
     return ProductModel(
       json["status"],
-      json["product"]?["product_name_es"] ?? "-",
-      json["product"]?["nutrition_grades"] ?? "-",
-      json["product"]?["selected_images"]?["front"]?["small"]?["en"] ??
-          json["product"]?["selected_images"]?["front"]?["small"]?["es"] ??
+      json["product"]?["product_name_es"] ??
+          json["product"]?["product_name"] ??
           "-",
+      json["product"]?["nutrition_grades"] ?? "-",
+      pictureUrl ?? "-",
       json["code"] as String,
       _processingFoodFromJson(
         json["product"]?["nutriments"]?["nova-group"] ?? -1,
       ),
       _nutrientLevelsFromJson(json["product"]?["nutrient_levels"]),
     );
+  }
+
+  static String? _getFirstValueFromMap(Map<String, dynamic>? map) {
+    if (map == null || map.isEmpty) {
+      return null;
+    }
+    // Retorna el valor de la primera clave encontrada.
+    return map.values.first;
   }
 
   Map<String, dynamic> toJson() {
