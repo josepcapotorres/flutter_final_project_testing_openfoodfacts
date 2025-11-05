@@ -1,0 +1,74 @@
+name: Android prod CD Play Store Aab
+
+on:
+  workflow_run:
+    workflows: ["Android prod CI"] # Nombre exacto
+    types:
+      - completed
+  
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag manual para CD (ej: 1.2.3)'
+        required: false
+
+jobs:
+  build_and_deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 👇 If the event is a tag, checkout from this tag directly
+          ref: ${{ github.ref_name }}
+      - uses: subosito/flutter-action@v2
+      
+      - name: Cleaning Flutter's build cache
+        run: flutter clean
+      
+      - name: Installing dependencies
+        run: flutter pub get
+      
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/my-release-key.jks
+      
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=app/my-release-key.jks" >> android/key.properties
+
+      - name: Extract app version
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Versión detectada: $VERSION"
+
+      - name: Create google-services.json (Android)
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > android/app/google-services.json
+
+      - name: Building aab in release mode
+        run: flutter build appbundle --release \
+          --dart-define=APP_NAME="OpenFoodFacts"
+
+      - name: Create Play Store service account JSON
+        run: |
+          echo '${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}' > service-account.json
+      
+      - name: Upload .aab to Google Play Internal Testing
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
+          packageName: es.josepcapo.flutter_final_project_testing_openfoodfacts
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: internal
+          status: completed
+
+      - name: Cleaning .jks and key.properties files
+        run: |
+          rm -f android/app/my-release-key.jks
+          rm -f android/key.properties
+          rm -f service-account.json
