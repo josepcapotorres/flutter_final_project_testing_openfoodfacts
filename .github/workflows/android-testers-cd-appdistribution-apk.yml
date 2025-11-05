@@ -67,7 +67,7 @@ jobs:
         run: |
           # Distribution
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
-            --app ${{ secrets.FIREBASE_APP_ID }} \
+            --app ${{ secrets.FIREBASE_APP_ID_ANDROID }} \
             --groups testers \
             --debug
       - name: Cleaning .jks and key.properties files
