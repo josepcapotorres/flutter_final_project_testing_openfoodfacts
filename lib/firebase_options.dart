@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA_C6EoVhBvmNc5PuBFfVt6IaM078fI-_I',
-    appId: '1:880723753619:android:b81828aec9942bcd0aab66',
+    appId: '1:880723753619:android:6c28748ce18b11c20aab66',
     messagingSenderId: '880723753619',
     projectId: 'openfoodfacts-testing-ci-cd',
     storageBucket: 'openfoodfacts-testing-ci-cd.firebasestorage.app',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA92jI4VY39WluohrB8rjh92uWW342sZYU',
-    appId: '1:880723753619:ios:ea259000e86bc4370aab66',
+    appId: '1:880723753619:ios:c5b64f874c1c32480aab66',
     messagingSenderId: '880723753619',
     projectId: 'openfoodfacts-testing-ci-cd',
     storageBucket: 'openfoodfacts-testing-ci-cd.firebasestorage.app',
-    iosBundleId: 'com.example.flutterFinalProjectTestingOpenfoodfacts',
+    iosBundleId: 'es.josepcapo.flutterFinalProjectTestingOpenfoodfacts',
   );
 
 }
