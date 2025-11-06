@@ -51,8 +51,9 @@ jobs:
           echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > android/app/google-services.json
 
       - name: Building aab in release mode
-        run: flutter build appbundle --release \
-          --dart-define=APP_NAME="OpenFoodFacts"
+        run: |
+          flutter build appbundle --release \
+            --dart-define=APP_NAME="OpenFoodFacts"
 
       - name: Create Play Store service account JSON
         run: |
