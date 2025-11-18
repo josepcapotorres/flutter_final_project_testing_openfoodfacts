@@ -10,33 +10,36 @@ class ProdsScanningProdDetailsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        spacing: 10,
-        children: [
-          const SizedBox(
-            width: double.infinity,
-          ),
-          if (loadedProduct.productImgUrl != null)
-            Image.network(
-              loadedProduct.productImgUrl!,
-              errorBuilder: (_, __, ___) =>
-                  Image.asset("assets/images/error.png"),
-            )
-          else
-            Image.asset("assets/images/error.png"),
-          Text(
-            loadedProduct.productName ?? "-",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          ListTile(
-            title: Text("Puntuación de Nutriscore:"),
-            subtitle: _NutriScoreValue(loadedProduct.nutriscoreScore),
-          ),
-          ListTile(
-            title: Text("Tipo de procesado: "),
-            subtitle: _ProcessedType(loadedProduct.processingFoodType),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          spacing: 10,
+          children: [
+            const SizedBox(
+              width: double.infinity,
+            ),
+            if (loadedProduct.productImgUrl != null)
+              Image.network(
+                loadedProduct.productImgUrl!,
+                errorBuilder: (_, __, ___) =>
+                    Image.asset("assets/images/error.png"),
+              )
+            else
+              Image.asset("assets/images/error.png"),
+            Text(
+              loadedProduct.productName ?? "-",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            ListTile(
+              title: Text("Puntuación de Nutriscore:"),
+              subtitle: _NutriScoreValue(loadedProduct.nutriscoreScore),
+            ),
+            ListTile(
+              title: Text("Tipo de procesado: "),
+              subtitle: _ProcessedType(loadedProduct.processingFoodType),
+            ),
+          ],
+        ),
       ),
     );
   }
