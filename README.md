@@ -1,7 +1,10 @@
-# 🧾 OpenFoodFacts Flutter — Testing & Clean Architecture
+# 🧾 OpenFoodFacts Flutter — Testing, Clean Architecture & CI/CD
 
-A Flutter project built around **Clean Architecture**, **TDD**, **Dependency injection** and solid **testing practices**.  
-It focuses on writing maintainable code and testing every layer of the app.
+A Flutter project built around **Clean Architecture**, **TDD**, **Dependency Injection**, and solid **testing practices**, with a complete **CI/CD pipeline** powered by GitHub Actions.
+
+This project emphasizes maintainable, testable code — and automates its delivery:
+- 🔄 Automatic builds and distribution to **Firebase App Distribution** for testing.
+- 🚀 Automated release to **Google Play (Closed Testing)** when pushing semantic version tags.
 
 ---
 
@@ -30,6 +33,28 @@ Includes complete testing coverage:
 
 ---
 
+## ⚙️ CI/CD — Automated Android Distribution
+
+This project includes a full GitHub Actions workflow for continuous integration and continuous delivery:
+
+### 🔹 Testing Environment — Firebase App Distribution
+- Triggered automatically **on every push to the `testing` branch**.
+- Builds and signs the app.
+- Distributes the build to **Firebase App Distribution** for internal testers.
+
+### 🔹 Production Environment — Google Play (Closed Testing)
+- Triggered **when pushing a Git tag** that matches:  
+  **`v.*.*.*`**
+- Generates the release AAB.
+- Uploads it to the **Closed Testing** track in Google Play Console.
+
+The pipeline handles:
+- Secure authentication (GitHub Secrets)
+- Build and signing
+- Automated distribution to the correct environment
+
+---
+
 ## 🧰 Tech Stack
 | Purpose | Package |
 |----------|----------|
@@ -39,4 +64,3 @@ Includes complete testing coverage:
 | Testing | flutter_test, bloc_test, mocktail |
 | Dependency injection | get_it |
 | Barcode scanning | flutter_barcode_scanner |
-
