@@ -17,6 +17,8 @@ class ProdsScanningCubit extends Cubit<ProdsScanningState> {
   void getProductDetails(String barcode) async {
     emit(ProdsScanningLoading());
 
+    await Future(() {});
+
     final result = await _getProductDetailsUseCase(barcode);
 
     result.fold(
