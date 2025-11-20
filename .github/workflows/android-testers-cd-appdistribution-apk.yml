@@ -47,7 +47,7 @@ jobs:
           echo "${{ secrets.FIREBASE_GOOGLE_SERVICES_JSON }}" > firebase.json
       - name: Building apk in release mode
         run: |
-          flutter build apk --release \
+          flutter build apk --release --obfuscate --split-debug-info=./android/app/build/flutter_symbols \
             --dart-define=APP_NAME="OpenFoodFacts testing Testers"
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
@@ -63,6 +63,11 @@ jobs:
           # Autenticación de gcloud con la cuenta de servicio
           gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_FILE --project=${{secrets.FIREBASE_PROJECT_ID}}
           gcloud config set project ${{ secrets.FIREBASE_PROJECT_ID }}
+      
+      - name: Upload the symbols to Crashlytics
+        working-directory: ./android
+        run: ./gradlew app:uploadCrashlyticsSymbolFileRelease
+
       - name: Uploading to Firebase App Distribution
         run: |
           # Distribution
@@ -74,5 +79,9 @@ jobs:
         run: |
           rm android/app/my-release-key.jks
           rm android/key.properties
+      
       - name: Clean up Firebase credentials
         run: rm firebase-sa-key.json
+      
+      - name: Clean flutter_symbols folder
+        run: rm -rf ./android/app/build/flutter_symbols
